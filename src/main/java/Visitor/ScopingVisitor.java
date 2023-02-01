@@ -23,6 +23,24 @@ public class ScopingVisitor implements Visitatore{
 
     Env top = null; //tabella dei simboli corrente
 
+    public String visit(InitDoForStepStat node){
+        top = new Env(top);
+
+        if(node.varDecl != null)
+            node.varDecl.accept(this);
+
+        for(int i=0; i< node.listaStat.size(); i++){
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+
+        node.currentEnv =top;
+        top = top.prev;
+
+        return null;
+    }
     @Override
     public String visit(ExprNode node) {
         return null;
@@ -257,6 +275,9 @@ public class ScopingVisitor implements Visitatore{
                 nodo.accept(this);
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
+                nodo.accept(this);
+            } else if (classe == InitDoForStepStat.class) {
+                InitDoForStepStat nodo = (InitDoForStepStat) node.nodo;
                 nodo.accept(this);
             } else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;

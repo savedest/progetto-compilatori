@@ -8,6 +8,9 @@ import java.util.ArrayList;
 public class TreeMaker implements Visitatore{
 public String content= "";
 
+    public String visit(InitDoForStepStat node){
+        return null;
+    }
     @Override
     public String visit(FuncallNode node) {
         this.content = String.format("<%s>",node.nomeNodo);

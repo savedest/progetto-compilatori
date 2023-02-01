@@ -10,6 +10,26 @@ public class GenerazioneCodiceC implements Visitatore{
     String content;
     Env top;
 
+    public String visit(InitDoForStepStat node){
+        this.content="";
+        this.content += node.varDecl.accept(this);
+        this.content += "do{\n";
+        for(int i=0; i<node.listaStat.size(); i++){
+            this.content += node.listaStat.get(i).accept(this);
+        }
+
+        for(int i=0; i<node.listaExpr.size(); i++){
+           // System.out.println( "ecco "+node.listaExpr.get(i).accept(this));
+            this.content += node.listaExpr.get(i).accept(this);
+            System.out.println(this.content+node.listaExpr.get(i).nomeNodo);
+        }
+
+        this.content += "}while(";
+        this.content += node.boolExpr.accept(this);
+        this.content += ")";
+
+        return content;
+    }
     @Override
     public String visit(ExprNode node) {
         this.content ="";
@@ -43,6 +63,7 @@ public class GenerazioneCodiceC implements Visitatore{
             IdVal nodo = (IdVal) node.nodo1;
 
             RecordSymbolTable record = top.getInTypeEnviroment(nodo.val);
+           if(record != null)
             if(record.isout)
                 this.content +="*";
 
@@ -55,6 +76,9 @@ public class GenerazioneCodiceC implements Visitatore{
             this.content += nodo.accept(this);
         } else if(classe == FuncallNode.class){
             FuncallNode nodo = (FuncallNode) node.nodo1;
+            this.content += nodo.accept(this);
+        } else if(classe == AssignStat.class){
+            AssignStat nodo = (AssignStat) node.nodo1;
             this.content += nodo.accept(this);
         } else if(classe == ExprNode.class) {
             ExprNode nodo = (ExprNode) node.nodo1;
@@ -295,6 +319,7 @@ public class GenerazioneCodiceC implements Visitatore{
             for (int i = 0; i < node.idList.size(); i++) {
                 RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(i).val);
 
+                if(record != null)
                 if(record.isout)
                     this.content+="*";
 
@@ -678,6 +703,10 @@ public class GenerazioneCodiceC implements Visitatore{
                 this.content += nodo.accept(this);
             } else if (classe == FuncallNode.class) {
                 FuncallNode nodo = (FuncallNode) node.nodo;
+                this.content += nodo.accept(this);
+                this.content += ";\n";
+            } else if (classe == InitDoForStepStat.class) {
+                InitDoForStepStat nodo = (InitDoForStepStat) node.nodo;
                 this.content += nodo.accept(this);
                 this.content += ";\n";
             } else if (classe == WhileStat.class) {

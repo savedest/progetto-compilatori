@@ -20,6 +20,84 @@ public class AnalisiSemantica implements Visitatore{
     Env top = null; //tabella dei simboli corrente
     OpTypeTable opTypeTable = new OpTypeTable();
 
+    public String visit(InitDoForStepStat node){
+        top= node.currentEnv;
+        int flag =0;
+
+        if(node.varDecl != null) {
+                node.varDecl.accept(this);
+
+        }
+
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+        node.boolExpr.accept(this);
+
+        if(node.listaExpr !=null){
+            for(int i =0 ;i< node.listaExpr.size();i++){
+                node.listaExpr.get(i).accept(this);
+            }
+        }
+
+
+        top= top.prev;
+
+
+            if(node.varDecl.typeNode.equals("error"))
+                flag=1;
+
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+        for(int i=0; i<node.listaExpr.size(); i++){
+            if(node.listaExpr.get(i).typeNode != null)
+            if( node.listaExpr.get(i).typeNode.equalsIgnoreCase("error"))
+                flag =1;
+        }
+
+
+
+        if(!node.boolExpr.typeNode.equals("BOOL")  ){
+
+            node.typeNode = "error";
+            try {
+                throw new Exception("è richiesta una condizione booleana nodo " + node.nomenodo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            node.typeNode = "notype";
+
+        }
+
+
+
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + node.nomenodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        return null;
+    }
     @Override
     public String visit(ExprNode node) {
         Class classe = node.nodo1.getClass();
@@ -81,6 +159,14 @@ public class AnalisiSemantica implements Visitatore{
             } else {
                 typeFirstOperand = nodo.typeNode;
             }
+        } else if(classe == AssignStat.class){
+            AssignStat nodo = (AssignStat) node.nodo1;
+            nodo.accept(this);
+            if(node.nodo2 == null) {
+                node.typeNode = nodo.typeNode;
+            } else {
+                typeFirstOperand = nodo.typeNode;
+            }
         } else if(classe == ExprNode.class){
             ExprNode nodo = (ExprNode)node.nodo1;
             nodo.accept(this);
@@ -102,7 +188,7 @@ public class AnalisiSemantica implements Visitatore{
                 node.typeNode = opTypeTable.searchOp(node.nomeNodo, typeFirstOperand, tipoNodo2); //controllo operazioni a due operatori
             }
         }
-
+if(node.typeNode != null)
         if(node.typeNode.equals("error")) {
             try {
                 if(node.nodo2 != null)
@@ -515,6 +601,10 @@ public class AnalisiSemantica implements Visitatore{
                 node.typeNode = nodo.typeNode;
             } else if (classe == FuncallNode.class) {
                 FuncallNode nodo = (FuncallNode) node.nodo;
+                nodo.accept(this);
+                node.typeNode = nodo.typeNode;
+            } else if (classe == InitDoForStepStat.class) {
+                InitDoForStepStat nodo = (InitDoForStepStat) node.nodo;
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
             } else if (classe == WhileStat.class) {

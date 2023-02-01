@@ -17,6 +17,7 @@ nodi\ProgramRoot.class
 nodi\WhileStat.class
 nodi\Body.class
 nodi\BoolConst.class
+nodi\InitDoForStepStat.class
 nodi\FuncallNode.class
 nodi\ElseStat.class
 nodi\Stat.class

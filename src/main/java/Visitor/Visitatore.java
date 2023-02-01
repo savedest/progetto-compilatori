@@ -4,6 +4,8 @@ import nodi.*;
 import java.util.ArrayList;
 
 public interface Visitatore {
+
+    String visit(InitDoForStepStat node);
     public String visit(ExprNode node);
     String visit(BoolConst node);
 
