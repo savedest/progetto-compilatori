@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="de-stefano-napolitano_es5" />
         <module name="de-stefano-napolitano_es4" />
+        <module name="esercitazione 5" />
       </profile>
     </annotationProcessing>
   </component>

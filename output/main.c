@@ -19,22 +19,18 @@ char * conversioneInt(int number){
   return buf;
 }char supporto[100];
 
+	int i=30;
+	bool  a = true;
+	bool  b = false;
+	char * c = (char*) malloc(sizeof(char) * 100);
+strcpy(c , "true");
+	int d = 3;
+	float f = 4.8;
 void test(){
-	int num,div_cor;
-	bool e_primo;
-	printf("Dare il numero da controllare e poi andare a capo");
-	scanf("%d",&num);
-	div_cor = 2;
-	e_primo = true;
-	if(num < 0){
-		printf("%s \n", "il numero non è positivo!");
+	for (int i = 8;i <= 7;i++){
+		printf("%s \n", "se vuoi fare la somma scrivi 1 ");
 }
-else{
-	if(num > 1){
-	   while (div_cor < num && e_primo){
-}
-}
-}
+		printf("%s %d \n", "fuori for ", i);
 }
 int main(){
 int intero=0;
