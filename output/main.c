@@ -4,7 +4,8 @@
 #include <stdbool.h>
 #include <math.h>
 //prototipi funzioni
-void test();
+void stampa(char * messaggio);
+void main2();
 
 
 char  *conversioneFloat(float number){
@@ -19,18 +20,36 @@ char * conversioneInt(int number){
   return buf;
 }char supporto[100];
 
-	int i=30;
-	bool  a = true;
-	bool  b = false;
-	char * c = (char*) malloc(sizeof(char) * 100);
-strcpy(c , "true");
-	int d = 3;
-	float f = 4.8;
-void test(){
-	for (int i = 8;i <= 7;i++){
-		printf("%s \n", "se vuoi fare la somma scrivi 1 ");
+void stampa(char * messaggio){
+		printf("%s \n", messaggio);
 }
-		printf("%s %d \n", "fuori for ", i);
+void main2(){
+	int a = 3;
+	int b;
+	{
+	int a = 2;
+	stampa("primoLet");
+	{
+	int a = 1;
+	float b = 2.3;
+	char *size = (char*) malloc(sizeof(char) * 100) ;
+	float result;
+	result = a + b;
+	if(result > 100){
+	char * valore = (char*) malloc(sizeof(char) * 100);
+strcpy(valore , "grande");
+	size = valore;
+}
+else{
+	{
+	char * valore = (char*) malloc(sizeof(char) * 100);
+strcpy(valore , "piccola");
+	size = valore;
+}
+}
+		printf("%s ", size);
+}
+}
 }
 int main(){
 int intero=0;
@@ -38,6 +57,6 @@ char carattere=' ';
 float float1=0;
 char *stringa="";
 bool booleano=false;
-test();
+main2();
 return 0;
 }

@@ -9,6 +9,11 @@ public class TreeMaker implements Visitatore{
 public String content= "";
 
     @Override
+    public String visit(LetStatNode node) {
+        return null;
+    }
+
+    @Override
     public String visit(FuncallNode node) {
         this.content = String.format("<%s>",node.nomeNodo);
 
@@ -126,6 +131,8 @@ public String content= "";
     public String visit(Body body, ArrayList<ParDecl> parDecls) {
         return null;
     }
+
+
 
 
     @Override

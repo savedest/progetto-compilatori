@@ -54,6 +54,11 @@ id = {symbol}({all_symbol})*
 "char" { return new Symbol(sym.CHAR);}
 "void"  { return new Symbol(sym.VOID);}
 
+"let"  { return new Symbol(sym.LET);}
+"end"  { return new Symbol(sym.END);}
+"in"  { return new Symbol(sym.IN);}
+
+
 
 "def"  { return new Symbol(sym.DEF);}
 "out"   { return new Symbol(sym.OUT);}

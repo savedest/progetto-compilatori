@@ -11,6 +11,60 @@ public class GenerazioneCodiceC implements Visitatore{
     Env top;
 
     @Override
+    public String visit(LetStatNode node) {
+        this.content ="";
+        top= node.currentEnv;
+        this.content +="{\n";
+        ArrayList<VarDecl> vardeclsObb = new ArrayList<>();
+        ArrayList<VarDecl> vardeclsFlag1 = new ArrayList<>();
+        ArrayList<VarDecl> vardeclsFlag0 = new ArrayList<>();
+        for(int i=0;i<node.listaVar.size();i++){
+            if (node.listaVar.get(i).nomeNodo.equalsIgnoreCase("vardeclobb")){
+                vardeclsObb.add(node.listaVar.get(i));
+            }
+        }
+        for(int i=0;i<node.listaVar.size();i++){
+            int flag=0;
+
+            if (node.listaVar.get(i).nomeNodo.equalsIgnoreCase("VarDecl")){
+                for(int h=0; h<node.listaVar.get(i).listaID.size();h++) {
+                    if(node.listaVar.get(i).listaID.get(h).expr!=null){
+                        if(node.listaVar.get(i).listaID.get(h).expr.nomeNodo.equalsIgnoreCase("id")){
+                            flag=1;
+                        }
+                    }
+                }if(flag==1){
+                    vardeclsFlag1.add(node.listaVar.get(i));
+                }else{
+                    vardeclsFlag0.add(node.listaVar.get(i));
+                }
+            }
+        }
+
+        for(int i=0;i<vardeclsObb.size();i++){
+            content+=vardeclsObb.get(i).accept(this);
+        }
+        for(int i=0;i<vardeclsFlag0.size();i++){
+            content+=vardeclsFlag0.get(i).accept(this);
+        }
+        for(int i=0;i<vardeclsFlag1.size();i++){
+            content+=vardeclsFlag1.get(i).accept(this);
+        }
+
+        Collections.reverse(node.listaStat);
+        for(int i=0;i<node.listaStat.size();i++){
+            if(node.listaStat.get(i) != null) {
+
+                content += node.listaStat.get(i).accept(this);
+            }
+        }
+        Collections.reverse(node.listaStat);
+
+        this.content +="}\n";
+        top= top.prev;
+        return content;
+    }
+    @Override
     public String visit(ExprNode node) {
         this.content ="";
         String tmp="";
@@ -686,6 +740,10 @@ public class GenerazioneCodiceC implements Visitatore{
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
                 this.content += nodo.accept(this);
+            } else if (classe == LetStatNode.class) {
+                LetStatNode nodo = (LetStatNode) node.nodo;
+                this.content += nodo.accept(this);
+
             } else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;
                 this.content += "return ";

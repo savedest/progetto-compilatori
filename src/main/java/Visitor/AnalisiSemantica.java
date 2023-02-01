@@ -21,6 +21,57 @@ public class AnalisiSemantica implements Visitatore{
     OpTypeTable opTypeTable = new OpTypeTable();
 
     @Override
+    public String visit(LetStatNode node) {
+        top= node.currentEnv;
+        int flag =0;
+
+        if(node.listaVar != null) {
+            for (int i = 0; i < node.listaVar.size(); i++) {
+                node.listaVar.get(i).accept(this);
+            }
+        }
+
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+
+
+        top= top.prev;
+
+        for (int i = 0; i < node.listaVar.size(); i++) {
+            if(node.listaVar.get(i).typeNode.equals("error"))
+                flag=1;
+        }
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + node.nomeNodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public String visit(ExprNode node) {
         Class classe = node.nodo1.getClass();
         String typeFirstOperand = "";
@@ -524,6 +575,11 @@ public class AnalisiSemantica implements Visitatore{
 
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
+                nodo.accept(this);
+                node.typeNode = nodo.typeNode;
+
+            } else if (classe == LetStatNode.class) {
+                LetStatNode nodo = (LetStatNode) node.nodo;
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
             } else if (classe == ExprNode.class) {
