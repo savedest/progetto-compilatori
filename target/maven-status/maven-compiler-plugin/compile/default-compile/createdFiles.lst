@@ -13,6 +13,7 @@ nodi\VarDecl.class
 Visitor\Env.class
 esercitazione5\parser.class
 esercitazione5\Yylex.class
+nodi\LetInstrNode.class
 nodi\ProgramRoot.class
 nodi\WhileStat.class
 nodi\Body.class

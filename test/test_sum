@@ -1,17 +1,34 @@
-fun1(){
-var
+start: def main2(): void{
+    var a <<3;
+    integer b;
+    let
+       var a<<2;
+    in
+    stampa("primoLet");
+     let
+       var a<<1;
+       var b<<2.3;
+       string size;
+       real result;
+     in
+       result<< a+b;
+       if result > 100 then{
+         var valore << "grande";
+         size<<valore;
+       }
+       else{
+         let
+            var valore <<"piccola";
+         in
+            size<<valore;
+         end let
+       }
+       (size)-->;
+     end let
+     end let
 
 }
-var
-var
-fun2(){
 
-
+def stampa(string messaggio): void{
+    (messaggio)-->!;
 }
-
-main
-
-fun3(){
-
-}
-var

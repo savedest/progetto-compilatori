@@ -531,7 +531,10 @@ public class AnalisiSemantica implements Visitatore{
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
                 node.tipoRitorno = nodo.typeNode;
-            }
+            }else if (classe == LetInstrNode.class) {
+                LetInstrNode nodo =(LetInstrNode) node.nodo;
+                nodo.accept(this);
+                node.typeNode= nodo.typeNode;            }
 
         }
 
@@ -854,6 +857,57 @@ public class AnalisiSemantica implements Visitatore{
             node.typeNode = "notype";
         }else{
             node.typeNode = "error";
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visit(LetInstrNode node) {
+        top= node.currentEnv;
+        int flag =0;
+
+        if(node.listaVar != null) {
+            for (int i = 0; i < node.listaVar.size(); i++) {
+                node.listaVar.get(i).accept(this);
+            }
+        }
+
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+
+
+        top= top.prev;
+
+        for (int i = 0; i < node.listaVar.size(); i++) {
+            if(node.listaVar.get(i).typeNode.equals("error"))
+                flag=1;
+        }
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + node.nomeNodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return null;

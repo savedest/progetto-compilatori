@@ -378,6 +378,12 @@ public String content= "";
         return content;
 
     }
+
+    @Override
+    public Object visit(LetInstrNode letInstrNode) {
+        return null;
+    }
+
     @Override
     public String visit(WhileStat node) {
         this.content = String.format("<%s>",node.nomenodo);

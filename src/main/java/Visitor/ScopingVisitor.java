@@ -261,6 +261,9 @@ public class ScopingVisitor implements Visitatore{
             } else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;
                 nodo.accept(this);
+            } else if (classe == LetInstrNode.class) {
+                LetInstrNode nodo =(LetInstrNode) node.nodo;
+                nodo.accept(this);
             }
         }
 
@@ -336,6 +339,22 @@ public class ScopingVisitor implements Visitatore{
 
         return null;
     }
+
+    @Override
+    public Object visit(LetInstrNode letInstrNode) {
+        top = new Env(top);
+
+        for(int i =0;i<letInstrNode.listaVar.size();i++) {
+            letInstrNode.listaVar.get(i).accept(this);
+        }
+        for(int i =0;i<letInstrNode.listaStat.size();i++) {
+            letInstrNode.listaStat.get(i).accept(this);
+        }
+        letInstrNode.currentEnv = top;
+        top = top.prev;
+        return null;
+    }
+
     @Override
     public String visit(WhileStat whileStat) {
 
