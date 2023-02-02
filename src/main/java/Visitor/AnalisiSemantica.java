@@ -81,7 +81,15 @@ public class AnalisiSemantica implements Visitatore{
             } else {
                 typeFirstOperand = nodo.typeNode;
             }
-        } else if(classe == ExprNode.class){
+        }  else if(classe == AssignStat.class){
+            AssignStat nodo = (AssignStat)node.nodo1;
+            nodo.accept(this);
+            if(node.nodo2 == null) {
+                node.typeNode = nodo.typeNode;
+            } else {
+                typeFirstOperand = nodo.typeNode;
+            }
+        }else if(classe == ExprNode.class){
             ExprNode nodo = (ExprNode)node.nodo1;
             nodo.accept(this);
             if(node.nodo2 == null) {
@@ -247,6 +255,7 @@ public class AnalisiSemantica implements Visitatore{
 
         for(int i = 0; i < node.exprList.size(); i++){
             node.exprList.get(i).accept(this);
+
         }
 
         ArrayList<String> typeExprFinale = new ArrayList<>();
@@ -534,82 +543,19 @@ public class AnalisiSemantica implements Visitatore{
             }else if (classe == LetInstrNode.class) {
                 LetInstrNode nodo =(LetInstrNode) node.nodo;
                 nodo.accept(this);
-                node.typeNode= nodo.typeNode;            }
+                node.typeNode= nodo.typeNode;
+            }else if (classe == InitDoForStep.class) {
+                InitDoForStep nodo =(InitDoForStep) node.nodo;
+                nodo.accept(this);
+                node.typeNode=nodo.typeNode;
+            }
 
         }
 
         return null;
     }
 
-    @Override
-    public String visit(Body node) {
-        top= node.currentEnv;
-        int flag =0;
 
-        if(node.listaVar != null) {
-        for (int i = 0; i < node.listaVar.size(); i++) {
-            node.listaVar.get(i).accept(this);
-        }
-}
-
-
-            for (int i = 0; i < node.listaStat.size(); i++) {
-                if(node.listaStat.get(i)!=null) {
-                    node.listaStat.get(i).accept(this);
-                }
-
-            }
-
-
-            top= top.prev;
-
-            for (int i = 0; i < node.listaVar.size(); i++) {
-                if(node.listaVar.get(i).typeNode.equals("error"))
-                    flag=1;
-            }
-            if(node.listaStat.size()!=0){
-                for (int i = 0; i < node.listaStat.size(); i++) {
-                    if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
-                        if (node.listaStat.get(i).typeNode.equals("error"))
-                            flag = 1;
-
-                    }
-                }
-            }
-
-
-        if (flag == 0) {
-            node.typeNode = "notype";
-        } else {
-            node.typeNode = "error";
-            try {
-                throw new Exception("Errore in : " + node.nomeNodo );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-            for (int i = 0; i < node.listaStat.size(); i++) {
-
-
-                if( node.listaStat.get(i)!= null &&  node.listaStat.get(i).nameStat.equals("return") ){
-
-                    node.tipoRitorno = node.listaStat.get(i).tipoRitorno;
-                    return null;
-                }else if( node.listaStat.get(i)!= null && node.listaStat.get(i).nameStat.equals("returnVoid")){
-                    node.tipoRitorno = "void";
-                    return null;
-                }
-
-                    node.tipoRitorno = "void";
-
-
-            }
-
-
-
-        return null;
-    }
 
 
 
@@ -910,6 +856,143 @@ public class AnalisiSemantica implements Visitatore{
             }
         }
 
+        return null;
+    }
+    public String visit(Body node) {
+        top= node.currentEnv;
+        int flag =0;
+
+        if(node.listaVar != null) {
+            for (int i = 0; i < node.listaVar.size(); i++) {
+                node.listaVar.get(i).accept(this);
+            }
+        }
+
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+
+
+        top= top.prev;
+
+        for (int i = 0; i < node.listaVar.size(); i++) {
+            if(node.listaVar.get(i).typeNode.equals("error"))
+                flag=1;
+        }
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + node.nomeNodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+
+
+            if( node.listaStat.get(i)!= null &&  node.listaStat.get(i).nameStat.equals("return") ){
+
+                node.tipoRitorno = node.listaStat.get(i).tipoRitorno;
+                return null;
+            }else if( node.listaStat.get(i)!= null && node.listaStat.get(i).nameStat.equals("returnVoid")){
+                node.tipoRitorno = "void";
+                return null;
+            }
+
+            node.tipoRitorno = "void";
+
+
+        }
+
+
+
+        return null;
+    }
+    @Override
+    public Object visit(InitDoForStep initDoForStep) {
+        top= initDoForStep.currentEnv;
+        int flag =0;
+
+        if(initDoForStep.init!=null){
+
+            initDoForStep.init.accept(this);
+        }
+
+            for(int i=0;i<initDoForStep.stats.size();i++) {
+                initDoForStep.stats.get(i).accept(this);
+            }
+
+
+        if(initDoForStep.cond!=null){
+
+            initDoForStep.cond.accept(this);
+        }
+        if(initDoForStep.loopExpr!=null){
+
+            for(int i=0;i<initDoForStep.loopExpr.size();i++) {
+                initDoForStep.loopExpr.get(i).accept(this);
+            }
+        }
+
+        top = top.prev;
+        if(initDoForStep.init!=null) {
+
+            if (initDoForStep.init.typeNode.equals("error"))
+                flag = 1;
+        }
+
+            for (int i = 0; i < initDoForStep.stats.size(); i++) {
+                if(initDoForStep.stats.get(i)!= null && initDoForStep.stats.get(i).typeNode != null  ) {
+                    if (initDoForStep.stats.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+
+        }
+        if(initDoForStep.cond!=null){
+
+            if(initDoForStep.cond.typeNode.equals("error"))
+            flag = 1;
+        }
+
+        if(initDoForStep.loopExpr!=null){
+
+            for(int i=0;i<initDoForStep.loopExpr.size();i++) {
+                if(initDoForStep.stats.get(i)!= null && initDoForStep.stats.get(i).typeNode != null  ) {
+                    if(initDoForStep.loopExpr.get(i).typeNode.equals("error"))
+                    flag = 1;
+                 }
+            }
+        }
+
+        if (flag == 0) {
+            initDoForStep.typeNode = "notype";
+        } else {
+            initDoForStep.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + initDoForStep.nomeNodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 }

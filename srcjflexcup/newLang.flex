@@ -77,6 +77,8 @@ id = {symbol}({all_symbol})*
 ":"  { return new Symbol(sym.COLON);}
 "<<"  { return new Symbol(sym.ASSIGN);}
 "return" { return new Symbol(sym.RETURN);}
+"do" { return new Symbol(sym.DO);}
+"step"  { return new Symbol(sym.STEP);}
 
 
 "true" { return new Symbol(sym.TRUE);}
@@ -97,6 +99,7 @@ id = {symbol}({all_symbol})*
 "and" { return new Symbol(sym.AND);}
 "or"  { return new Symbol(sym.OR);}
 "not"  { return new Symbol(sym.NOT);}
+"init" { return new Symbol(sym.INIT);}
 
  {id} { return new Symbol(sym.ID,yytext()); }
 

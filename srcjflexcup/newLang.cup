@@ -1,6 +1,6 @@
 import nodi.*;
 import java.util.ArrayList;
-terminal MAIN, SEMI, COMMA, PIPE, VAR, STRING, BOOL,INTEGER,REAL, UMINUS,
+terminal MAIN,DO,INIT,STEP, SEMI, COMMA, PIPE, VAR, STRING, BOOL,INTEGER,REAL, UMINUS,
 CHAR, VOID, DEF, OUT, FOR, IF,LET, IN, END, THEN, ELSE, WHILE, TO, LOOP, READ, WRITE, WRITELN, LPAR, RPAR, LBRACK, RBRACK, COLON, ASSIGN, RETURN,  TRUE, FALSE, PLUS, MINUS, TIMES, DIV, POW, STR_CONCAT, EQ, NE, LT, LE, GT, GE, AND, OR, NOT ;
 terminal String ID, STRING_CONST;
 terminal  Integer INTEGER_CONST;
@@ -9,10 +9,10 @@ terminal float REAL_CONST;
 terminal Character CHAR_CONST;
 
 
-nonterminal Program, DeclList, MainFunDecl,
+nonterminal Program,CondExpression,LoopExpression,InitExpression, DeclList, MainFunDecl,InitDoForStep,
  VarDecl,FunDecl, Type, IdInitList,IdInitObblList,Expr,Const,  ParamDeclList,TypeOrVoid, Body,
  VarDeclList, StatList,NonEmptyParamDeclList,ParDecl, IdList, Stat, IfStat,ForStat,ReadStat,WriteStat,AssignStat,
- WhileStat,FunCall,Else,ExprList,LetInstr;
+ WhileStat,FunCall,Else,ExprList,LetInstr,AssignStatI;
 // The value associated to a Circuit1 and a Series block is the resistance; for
 // a Parallel block it is the conductance.
 // Now the grammar itself
@@ -92,18 +92,25 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
             VarDeclList ::=/* empty */ {: ArrayList<VarDecl> list = new ArrayList<VarDecl>();RESULT = list;:}
             	| VarDecl:varDecl VarDeclList:varDeclList {:((ArrayList<VarDecl>)varDeclList).add(0, (VarDecl)varDecl); RESULT = varDeclList;:};
 
-            StatList ::= Stat:stat {: ArrayList<Stat> statList = new ArrayList<Stat>(); statList.add(0, (Stat)stat);RESULT = statList;:}
-            	 | StatList:statList Stat:stat {:((ArrayList<Stat>)statList).add(0, (Stat)stat); RESULT = statList;:};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+              StatList ::= Stat:stat {: ArrayList<Stat> statList = new ArrayList<Stat>(); statList.add(0, (Stat)stat);RESULT = statList;:}
+                       	 | StatList:statList Stat:stat {:((ArrayList<Stat>)statList).add(0, (Stat)stat); RESULT = statList;:};
             Stat ::= IfStat:ifVal {:RESULT = new Stat((IfStat)ifVal);:}
             	| ForStat:forVal {:RESULT = new Stat( (ForStat)forVal);:}
             	| ReadStat:readVal SEMI {:RESULT = new Stat((ReadStat) readVal);:}
             	| WriteStat: writeVal  SEMI {:RESULT = new Stat( (WriteStat)writeVal);:}
-            	| AssignStat: assignVal SEMI {:RESULT = new Stat( (AssignStat)assignVal);:}
+            	| AssignStat: assignVal  SEMI{:RESULT = new Stat( (AssignStat)assignVal);:}
                     | WhileStat : whileVal {:RESULT = new Stat((WhileStat)whileVal);:}
             	| FunCall: funCallVal SEMI {:RESULT = new Stat( (FuncallNode)funCallVal);:}
             	| LetInstr: letinstr {:RESULT = new Stat((LetInstrNode)letinstr);:}
+            	| InitDoForStep:initDoForStep  {:RESULT = new Stat((InitDoForStep)initDoForStep);:}
             	| RETURN Expr:exprVal SEMI {:RESULT = new Stat( "return",(ExprNode)exprVal);:}
             	| RETURN SEMI{:RESULT = new Stat( "returnVoid",null);:}
             	| /* empty */ ;
@@ -112,6 +119,22 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
 
             /////////////////////////////////////////////////////////////////////////////////////////
 
+   InitDoForStep ::= INIT LPAR InitExpression:initExpressione RPAR DO LBRACK StatList:statList RBRACK FOR LPAR CondExpression:condExp RPAR STEP LPAR LoopExpression:loopExp RPAR SEMI   {:RESULT = new InitDoForStep("InitDoForStep",(VarDecl)initExpressione, (ArrayList<Stat>)statList,(ExprNode)condExp,(ArrayList<ExprNode>)loopExp);:};
+
+
+            CondExpression::=  Expr:expr                {: RESULT= (ExprNode)expr;:}
+            | /*empty*/{:RESULT = null;:};
+
+            LoopExpression ::= Expr:expr                {: ArrayList<ExprNode> list = new ArrayList<ExprNode>(); list.add(0, (ExprNode)expr); RESULT = list;:}
+            | Expr:expr SEMI LoopExpression:exprList   {:((ArrayList<ExprNode>)exprList).add(0, (ExprNode)expr); RESULT = exprList;:}
+            | /*empty*/{:RESULT = null;:};
+
+
+
+
+            InitExpression ::= Type:type IdInitList:idInit  {:RESULT = new VarDecl("VarDecl",(String)type, (ArrayList<IDInit>)idInit);:}
+            | VAR IdInitObblList:idInitObb {:RESULT = new VarDecl("VarDeclObb", (ArrayList<IDInitObb>)idInitObb);:}
+            | /*empty*/{:RESULT = null;:};
 
 
 
@@ -148,6 +171,7 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
 
 
 
+            //AssignStatI ::=  IdList:idList  ASSIGN Expr:expr {: RESULT = new AssignStat("AssignOp", (ArrayList<IdVal>)idList,(ExprNode)expr); :};
 
             AssignStat ::=  IdList:idList ASSIGN ExprList:exprList {: RESULT = new AssignStat("AssignOp",(ArrayList<IdVal>)idList,(ArrayList<ExprNode>)exprList); :};
 
@@ -165,6 +189,7 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
            | CHAR_CONST:val           {: RESULT = new ExprNode("CHAR_CONST", new CharConst(val)); :}
            | ID:val                   {: RESULT = new ExprNode("ID", new IdVal(val)); :}
            | FunCall:val              {: RESULT = new ExprNode("FuncallOp",  (FuncallNode)val); :}
+           | AssignStat:val              {: RESULT = new ExprNode("AssignOp",  (AssignStat)val); :}
            | Expr:e1  PLUS Expr:e2          {: RESULT = new ExprNode("AddOp", (Node)e1, (Node)e2); :}
            | Expr:e1  MINUS Expr:e2         {: RESULT = new ExprNode("MinusOp", (Node)e1, (Node)e2); :}
            | Expr:e1  TIMES Expr:e2         {: RESULT = new ExprNode("MulOp", (Node)e1, (Node)e2); :}

@@ -4,8 +4,7 @@
 #include <stdbool.h>
 #include <math.h>
 //prototipi funzioni
-void stampa(char * messaggio);
-void main2();
+void test();
 
 
 char  *conversioneFloat(float number){
@@ -20,39 +19,25 @@ char * conversioneInt(int number){
   return buf;
 }char supporto[100];
 
-void stampa(char * messaggio){
-		printf("%s \n", messaggio);
-}
-void main2(){
-	int a = 3;
-	int b;
-	{
-	int a = 2;
-	stampa("primoLet");
-	{
-	int a = 1;
-	float b = 2.3;
-	char *size = (char*) malloc(sizeof(char) * 100) ;
-	float result;
-	result = a + b;
-	if(result > 100){
-	char * valore = (char*) malloc(sizeof(char) * 100);
-strcpy(valore , "grande");
-	size = valore;
-}
-else{
-	{
-	char * valore = (char*) malloc(sizeof(char) * 100);
-strcpy(valore , "piccola");
-	size = valore;
-}
+void test(){
+	int k;
+	{	int k=1,j=1,i=1;
 
+do {
+		printf("%s ", "ciao, ");
+		printf("%d ", i);
+		printf("%s ", ", ");
+		printf("%d \n", j);
+		printf("%d ", k);
+i = i + 1;
+;
+j = j - 1;
+;
+k = i + 1;
+;
 }
-		printf("%s ", size);
+while (i < 20 && j >  -20);
 }
-
-}
-
 }
 int main(){
 int intero=0;
@@ -60,6 +45,6 @@ char carattere=' ';
 float float1=0;
 char *stringa="";
 bool booleano=false;
-main2();
+test();
 return 0;
 }

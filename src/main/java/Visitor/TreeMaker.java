@@ -385,6 +385,11 @@ public String content= "";
     }
 
     @Override
+    public Object visit(InitDoForStep initDoForStep) {
+        return null;
+    }
+
+    @Override
     public String visit(WhileStat node) {
         this.content = String.format("<%s>",node.nomenodo);
 

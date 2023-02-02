@@ -49,4 +49,6 @@ public interface Visitatore {
     Object visit(ElseStat node);
 
     Object visit(LetInstrNode letInstrNode);
+
+    Object visit(InitDoForStep initDoForStep);
 }

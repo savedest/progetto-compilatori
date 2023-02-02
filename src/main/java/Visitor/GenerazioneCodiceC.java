@@ -56,6 +56,9 @@ public class GenerazioneCodiceC implements Visitatore{
         } else if(classe == FuncallNode.class){
             FuncallNode nodo = (FuncallNode) node.nodo1;
             this.content += nodo.accept(this);
+        } else if(classe == AssignStat.class){
+            AssignStat nodo = (AssignStat) node.nodo1;
+            this.content += nodo.accept(this);
         } else if(classe == ExprNode.class) {
             ExprNode nodo = (ExprNode) node.nodo1;
 
@@ -695,6 +698,10 @@ public class GenerazioneCodiceC implements Visitatore{
                 LetInstrNode nodo =(LetInstrNode) node.nodo;
                 this.content += nodo.accept(this);
                 this.content += "\n";
+            }else if (classe == InitDoForStep.class) {
+                InitDoForStep nodo =(InitDoForStep) node.nodo;
+                this.content += nodo.accept(this);
+                this.content += "\n";
             }
 //            else if (node.nameStat.equalsIgnoreCase("returnVoid")) {
 //                this.content += "return ";
@@ -1148,6 +1155,50 @@ public class GenerazioneCodiceC implements Visitatore{
         Collections.reverse(node.listaStat);
 
         this.content +="}\n";
+        top= top.prev;
+        return content;
+    }
+
+    @Override
+    public Object visit(InitDoForStep node) {
+        this.content ="";
+        top= node.currentEnv;
+        this.content +="{";
+        if (node.init!= null){
+            content+=node.init.accept(this);
+        }
+        this.content+="\n";
+        this.content+="do {\n";
+        Collections.reverse(node.stats);
+        for(int i=0;i<node.stats.size();i++){
+            if(node.stats.get(i) != null) {
+
+                content += node.stats.get(i).accept(this);
+            }
+        }
+        Collections.reverse(node.stats);
+        if(node.loopExpr!= null) {
+            for(int i=0;i<node.loopExpr.size();i++) {
+                content += node.loopExpr.get(i).accept(this);
+                content+= ";\n";
+            }
+        }
+
+        this.content +="}\n";
+        this.content+="while (";
+        if(node.cond != null) {
+
+            content += node.cond.accept(this);
+        }
+        this.content+=");\n";
+        this.content +="}";
+//        this.content+="step (";
+//        if(node.loopExpr!= null) {
+//            for(int i=0;i<node.loopExpr.size();i++) {
+//                content += node.loopExpr.get(i).accept(this);
+//            }
+//        }
+//        this.content+=");\n";
         top= top.prev;
         return content;
     }

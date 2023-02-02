@@ -264,6 +264,9 @@ public class ScopingVisitor implements Visitatore{
             } else if (classe == LetInstrNode.class) {
                 LetInstrNode nodo =(LetInstrNode) node.nodo;
                 nodo.accept(this);
+            }else if (classe == InitDoForStep.class) {
+                InitDoForStep nodo =(InitDoForStep) node.nodo;
+                nodo.accept(this);
             }
         }
 
@@ -313,7 +316,6 @@ public class ScopingVisitor implements Visitatore{
             }
         }
 
-        printSymbleTable();
 
 
         body.currentEnv = top;
@@ -351,6 +353,35 @@ public class ScopingVisitor implements Visitatore{
             letInstrNode.listaStat.get(i).accept(this);
         }
         letInstrNode.currentEnv = top;
+        top = top.prev;
+        return null;
+    }
+
+    @Override
+    public Object visit(InitDoForStep initDoForStep) {
+        top = new Env(top);
+        if(initDoForStep.init!=null){
+
+                initDoForStep.init.accept(this);
+        }
+
+            for(int i=0;i<initDoForStep.stats.size();i++) {
+                initDoForStep.stats.get(i).accept(this);
+            }
+
+        if(initDoForStep.cond!=null){
+
+            initDoForStep.cond.accept(this);
+        }
+        if(initDoForStep.loopExpr!=null){
+
+            for(int i=0;i<initDoForStep.loopExpr.size();i++) {
+                initDoForStep.loopExpr.get(i).accept(this);
+            }
+        }
+        initDoForStep.currentEnv = top;
+        printSymbleTable();
+
         top = top.prev;
         return null;
     }
