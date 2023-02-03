@@ -23,7 +23,7 @@ void test(){
 		int j=1,i=1;
 do{
 		printf("%d \n", j);
-		printf("%s ", ", ");
+		printf("%s ", "é ");
 		printf("%d ", i);
 		printf("%s ", "ciao, ");
 i = i + 1;
