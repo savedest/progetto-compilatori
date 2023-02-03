@@ -655,6 +655,14 @@ public class AnalisiSemantica implements Visitatore{
         node.nodeEx.accept(this);
         node.body.accept(this);
 
+        if(node.els != null) {
+
+            node.els.accept(this);
+
+            if(node.els.typeNode.equals("error"))
+                flag=1;
+        }
+
 
 
 
@@ -668,6 +676,7 @@ public class AnalisiSemantica implements Visitatore{
                 e.printStackTrace();
             }
         }else{
+            node.els.negBool=node.nodeEx;
             node.typeNode = "notype";
 
         }
@@ -857,5 +866,17 @@ public class AnalisiSemantica implements Visitatore{
         }
 
         return null;
+    }
+
+    @Override
+    public String visit(ElseLoopStat node){
+        node.body.accept(this);
+        if(node.body.typeNode.equals("notype")){
+            node.typeNode = "notype";
+        }else{
+            node.typeNode = "error";
+        }
+
+        return  null;
     }
 }

@@ -22,6 +22,7 @@ nodi\ElseStat.class
 nodi\Stat.class
 Visitor\GenerazioneCodiceC.class
 nodi\IdVal.class
+nodi\ElseLoopStat.class
 Visitor\ScopingVisitor.class
 esercitazione5\Main.class
 Visitor\OpTypeTable.class

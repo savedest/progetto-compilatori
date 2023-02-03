@@ -336,10 +336,19 @@ public class ScopingVisitor implements Visitatore{
 
         return null;
     }
+
+    @Override
+    public String visit(ElseLoopStat node){
+        node.body.accept(this);
+        return  null;
+    }
     @Override
     public String visit(WhileStat whileStat) {
 
         whileStat.body.accept(this);
+        if(whileStat.els != null){
+            whileStat.els.accept(this);
+        }
 
         return null;
     }

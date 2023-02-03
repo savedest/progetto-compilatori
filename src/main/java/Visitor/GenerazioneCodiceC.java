@@ -787,6 +787,9 @@ public class GenerazioneCodiceC implements Visitatore{
         this.content += ")";
 
         this.content+=node.body.accept(this);
+        if(node.els!=null){
+            content+=node.els.accept(this);
+        }
 
         return content;
     }
@@ -1091,6 +1094,19 @@ public class GenerazioneCodiceC implements Visitatore{
         this.content +="else";
         this.content+= node.body.accept(this);
         return content;
+    }
+
+    @Override
+    public String visit(ElseLoopStat node){
+        this.content ="";
+        this.content += "   while (!";
+        content+=node.negBool.accept(this);
+        this.content += ")";
+
+        this.content+=node.body.accept(this);
+
+
+        return  content;
     }
 
     public String  printSymbleTable(){

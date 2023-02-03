@@ -62,6 +62,7 @@ id = {symbol}({all_symbol})*
 "then"  { return new Symbol(sym.THEN);}
 "else"  { return new Symbol(sym.ELSE);}
 "while" { return new Symbol(sym.WHILE);}
+"elseloop"  { return new Symbol(sym.ELSELOOP);}
 "to"  { return new Symbol(sym.TO);}
 "loop" { return new Symbol(sym.LOOP);}
 "<--"  { return new Symbol(sym.READ);}

@@ -9,6 +9,11 @@ public class TreeMaker implements Visitatore{
 public String content= "";
 
     @Override
+    public String visit(ElseLoopStat node){
+        return  null;
+    }
+
+    @Override
     public String visit(FuncallNode node) {
         this.content = String.format("<%s>",node.nomeNodo);
 

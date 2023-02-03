@@ -1,13 +1,13 @@
-integer i<<30;
-var a<< true;
-var b<< false;
-var c<< "true";
-var d<< 3;
-var f<< 4.8;
-start: def test(): void{
 
-    for i<<8 to 7 loop {
-    ("se vuoi fare la somma scrivi 1 ") -->!;
+start: def test(): void{
+integer i<<0;
+
+    while i<6 loop {
+    i<<i+1;
+   (i-1)-->!;
+
+    }elseloop{
+        (i,"mo basta")-->!;
     }
-    ("fuori for ",i) -->!;
+
 }
