@@ -526,7 +526,10 @@ public class AnalisiSemantica implements Visitatore{
                 ReadStat nodo = (ReadStat) node.nodo;
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
-            } else if (classe == ExprNode.class) {
+            }  else if (classe == WhileLoopStat.class) {
+                WhileLoopStat nodo = (WhileLoopStat) node.nodo;
+                nodo.accept(this);
+            }else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
@@ -855,6 +858,38 @@ public class AnalisiSemantica implements Visitatore{
         }else{
             node.typeNode = "error";
         }
+
+        return null;
+    }
+
+    @Override
+    public Object visit(WhileLoopStat node) {
+
+
+        int flag = 0;
+
+        // printSymbleTable2();
+        node.nodeEx.accept(this);
+        node.body.accept(this);
+        node.body2.accept(this);
+
+
+
+
+
+        if(!node.nodeEx.typeNode.equals("BOOL") ||  (node.body.typeNode.equals("error")) ||  (node.body2.typeNode.equals("error")) ){
+
+            node.typeNode = "error";
+            try {
+                throw new Exception("eccezione nodo" + node.nomenodo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else{
+            node.typeNode = "notype";
+
+        }
+
 
         return null;
     }

@@ -47,4 +47,6 @@ public interface Visitatore {
     String visit(ProgramRoot node);
 
     Object visit(ElseStat node);
+
+    Object visit(WhileLoopStat whileLoopStat);
 }

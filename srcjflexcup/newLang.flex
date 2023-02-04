@@ -53,7 +53,7 @@ id = {symbol}({all_symbol})*
 "boolean" { return new Symbol(sym.BOOL);}
 "char" { return new Symbol(sym.CHAR);}
 "void"  { return new Symbol(sym.VOID);}
-
+""
 
 "def"  { return new Symbol(sym.DEF);}
 "out"   { return new Symbol(sym.OUT);}
@@ -95,6 +95,8 @@ id = {symbol}({all_symbol})*
 "and" { return new Symbol(sym.AND);}
 "or"  { return new Symbol(sym.OR);}
 "not"  { return new Symbol(sym.NOT);}
+
+"end" { return new Symbol(sym.END);}
 
  {id} { return new Symbol(sym.ID,yytext()); }
 

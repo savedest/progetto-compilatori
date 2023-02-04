@@ -258,7 +258,10 @@ public class ScopingVisitor implements Visitatore{
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
                 nodo.accept(this);
-            } else if (classe == ExprNode.class) {
+            } else if (classe == WhileLoopStat.class) {
+                WhileLoopStat nodo = (WhileLoopStat) node.nodo;
+                nodo.accept(this);
+            }else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;
                 nodo.accept(this);
             }
@@ -336,6 +339,14 @@ public class ScopingVisitor implements Visitatore{
 
         return null;
     }
+
+    @Override
+    public Object visit(WhileLoopStat nodo) {
+        nodo.body.accept(this);
+        nodo.body2.accept(this);
+        return null;
+    }
+
     @Override
     public String visit(WhileStat whileStat) {
 

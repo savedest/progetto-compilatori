@@ -686,6 +686,9 @@ public class GenerazioneCodiceC implements Visitatore{
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
                 this.content += nodo.accept(this);
+            }  else if (classe == WhileLoopStat.class) {
+                WhileLoopStat nodo = (WhileLoopStat) node.nodo;
+                nodo.accept(this);
             } else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;
                 this.content += "return ";
@@ -1090,6 +1093,21 @@ public class GenerazioneCodiceC implements Visitatore{
         this.content ="";
         this.content +="else";
         this.content+= node.body.accept(this);
+        return content;
+    }
+
+    @Override
+    public Object visit(WhileLoopStat node) {
+        this.content = "";
+        this.content += "   while (";
+        content+=node.nodeEx.accept(this);
+        this.content += ")";
+        this.content+=node.body.accept(this);
+
+        this.content += "   while (!(";
+        content+=node.nodeEx.accept(this);
+        this.content += "))";
+        this.content+=node.body2.accept(this);
         return content;
     }
 
