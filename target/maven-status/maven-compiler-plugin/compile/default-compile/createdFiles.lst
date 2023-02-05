@@ -23,6 +23,7 @@ nodi\Stat.class
 Visitor\GenerazioneCodiceC.class
 nodi\IdVal.class
 Visitor\ScopingVisitor.class
+nodi\Mapsum.class
 esercitazione5\Main.class
 Visitor\OpTypeTable.class
 nodi\ExprNode.class

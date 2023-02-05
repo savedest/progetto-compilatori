@@ -1,0 +1,11 @@
+start: def test(): void{
+
+real b;
+b<<mapsum(sum, (3.3,3.3),(3.3,3.3),(3.5,3.3));
+(b)-->;
+}
+def sum(real a,f):real{
+
+   return a;
+}
+

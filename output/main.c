@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <math.h>
 //prototipi funzioni
+float sum(float a,float f);
 void test();
 
 
@@ -19,18 +20,13 @@ char * conversioneInt(int number){
   return buf;
 }char supporto[100];
 
-	int i=30;
-	bool  a = true;
-	bool  b = false;
-	char * c = (char*) malloc(sizeof(char) * 100);
-strcpy(c , "true");
-	int d = 3;
-	float f = 4.8;
-void test(){
-	for (int i = 8;i <= 7;i++){
-		printf("%s \n", "se vuoi fare la somma scrivi 1 ");
+float sum(float a,float f){
+	return a;
 }
-		printf("%s %d \n", "fuori for ", i);
+void test(){
+	float b;
+	b = sum(3.3,3.3)+sum (3.3,3.3)+sum(3.5,3.3);
+		printf("%f ", b);
 }
 int main(){
 int intero=0;

@@ -262,6 +262,10 @@ public class ScopingVisitor implements Visitatore{
                 ExprNode nodo = (ExprNode) node.nodo;
                 nodo.accept(this);
             }
+            else if (classe == Mapsum.class) {
+                Mapsum nodo = (Mapsum) node.nodo;
+                nodo.accept(this);
+            }
         }
 
         return null;
@@ -336,6 +340,14 @@ public class ScopingVisitor implements Visitatore{
 
         return null;
     }
+
+    @Override
+    public Object visit(Mapsum mapsum) {
+
+
+        return null;
+    }
+
     @Override
     public String visit(WhileStat whileStat) {
 

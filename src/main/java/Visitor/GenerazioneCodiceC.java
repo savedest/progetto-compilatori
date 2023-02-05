@@ -56,6 +56,9 @@ public class GenerazioneCodiceC implements Visitatore{
         } else if(classe == FuncallNode.class){
             FuncallNode nodo = (FuncallNode) node.nodo1;
             this.content += nodo.accept(this);
+        }  else if(classe == Mapsum.class){
+            Mapsum nodo = (Mapsum) node.nodo1;
+            this.content += nodo.accept(this);
         } else if(classe == ExprNode.class) {
             ExprNode nodo = (ExprNode) node.nodo1;
 
@@ -291,7 +294,19 @@ public class GenerazioneCodiceC implements Visitatore{
     @Override
     public String visit(AssignStat node) {
         this.content ="";
-        if(node.idList.size()==node.exprList.size()) {
+        if(node.exprList.get(0).nomeNodo.equalsIgnoreCase("mapsum")){
+            RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(0).val);
+
+            if(record.isout)
+                this.content+="*";
+
+            this.content+=node.idList.get(0).accept(this);
+            this.content+=" = ";
+            this.content+= node.exprList.get(0).accept(this);
+            this.content+=";\n";
+
+
+        } else if(node.idList.size()==node.exprList.size()) {
             for (int i = 0; i < node.idList.size(); i++) {
                 RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(i).val);
 
@@ -1090,6 +1105,39 @@ public class GenerazioneCodiceC implements Visitatore{
         this.content ="";
         this.content +="else";
         this.content+= node.body.accept(this);
+        return content;
+    }
+
+    @Override
+    public Object visit(Mapsum node) {
+        this.content ="";
+        this.content += node.id2.val;
+        this.content +="(";
+        for(int i=0;i<node.exprNodes1.size();i++) {
+            this.content += node.exprNodes1.get(i).accept(this);
+            if(i!=node.exprNodes1.size()-1){
+                this.content +=",";
+            }
+        }
+        this.content +=")+";
+        this.content += node.id2.val;
+        this.content +=" (";
+        for(int i=0;i<node.exprNodes2.size();i++) {
+            this.content += node.exprNodes2.get(i).accept(this);
+            if(i!=node.exprNodes1.size()-1){
+                this.content +=",";
+            }
+        }
+        this.content +=")+";
+        this.content += node.id2.val;
+        this.content +="(";
+        for(int i=0;i<node.exprNodes3.size();i++) {
+            this.content += node.exprNodes3.get(i).accept(this);
+            if(i!=node.exprNodes1.size()-1){
+                this.content +=",";
+            }
+        }
+        this.content +=")";
         return content;
     }
 

@@ -81,6 +81,14 @@ public class AnalisiSemantica implements Visitatore{
             } else {
                 typeFirstOperand = nodo.typeNode;
             }
+        } else if(classe == Mapsum.class){
+            Mapsum nodo = (Mapsum)node.nodo1;
+            nodo.accept(this);
+            if(node.nodo2 == null) {
+                node.typeNode = nodo.typeNode;
+            } else {
+                typeFirstOperand = nodo.typeNode;
+            }
         } else if(classe == ExprNode.class){
             ExprNode nodo = (ExprNode)node.nodo1;
             nodo.accept(this);
@@ -229,37 +237,159 @@ public class AnalisiSemantica implements Visitatore{
             }
         }
 
+        return null;
+    }
 
 
+    @Override
+    public String visit(Mapsum node) {
+        int flag = 0;
+
+
+            if (node.exprNodes1 != null) {
+                controlloMapsum(node, node.exprNodes1);
+                if (!(node.typeNode.equalsIgnoreCase("integer") || node.typeNode.equalsIgnoreCase("real"))) {
+
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Tipo di ritrono errato" + node.nomeNodo);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+            }
+            if (node.exprNodes2 != null) {
+                controlloMapsum(node, node.exprNodes2);
+                if (!(node.typeNode.equalsIgnoreCase("integer") || node.typeNode.equalsIgnoreCase("real"))) {
+                    node.typeNode = "error";
+                    try {
+                        throw new Exception("Tipo di ritrono errato" + node.nomeNodo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            if (node.exprNodes3 != null) {
+                controlloMapsum(node, node.exprNodes3);
+                if (!(node.typeNode.equalsIgnoreCase("integer") || node.typeNode.equalsIgnoreCase("real"))) {
+                    node.typeNode = "error";
+                    try {
+                        throw new Exception("Tipo di ritrono errato" + node.nomeNodo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
 
 
 
         return null;
     }
 
+    public void controlloMapsum(Mapsum node, ArrayList<ExprNode> listaExprNode){
+      int flag  =0;
+        node.id2.accept(this);
+
+        if(listaExprNode !=null){
+            for(int i =0 ;i< listaExprNode.size();i++){
+                listaExprNode.get(i).accept(this);
+            }
+        }
+
+        int sizeList = 0;
+
+        RecordSymbolTable recordSymbolTable = top.getInTypeEnviroment(node.id2.val);
+
+        if (recordSymbolTable != null && (recordSymbolTable.kind.equals("func") || (recordSymbolTable.kind.equals("mainFunc")) )){
+            if(listaExprNode != null)
+                sizeList = listaExprNode.size();
+
+            if(sizeList == recordSymbolTable.typeParametri.size()) {//da rivedere
+
+                for (int i = 0; i < sizeList; i++) { //controllo che i parametri passati alla proc siano del tipo corretto
+                    if (!(listaExprNode.get(i).typeNode.equalsIgnoreCase(recordSymbolTable.typeParametri.get(i)))) {
+                        flag = 1;
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Tipo di parametri errato" + node.nomeNodo);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+                if(flag ==0) {
+                    if(recordSymbolTable.typeRitorno.equalsIgnoreCase("void")) {
+                        node.typeNode = "notype";
+
+                    }else{
+                        node.typeNode = recordSymbolTable.typeRitorno;
+
+                    }
+
+                }
+            } else {
+                node.typeNode = "error";
+                try {
+                    throw new Exception("Numero di parametri errato " + node.id2.val);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{
+            node.typeNode = "error";
+            try {
+                throw new Exception("Funzione non esistente " + node.id2.val);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
     @Override
     public String visit(AssignStat node) {
 
-
-        for(int i = 0; i < node.idList.size(); i++){
-            node.idList.get(i).accept(this);
-        }
-
-        for(int i = 0; i < node.exprList.size(); i++){
-            node.exprList.get(i).accept(this);
-        }
-
-        ArrayList<String> typeExprFinale = new ArrayList<>();
-        int flag = 0;
-        for(int i = 0; i < node.exprList.size(); i++) { //aggiungo a typeExprFinale tutti i tipi che andiamo ad assegnare
-            if (node.exprList.get(i).nomeNodo.equals("FuncallOp")) {
-                FuncallNode proc = (FuncallNode) node.exprList.get(i).nodo1;
-                if (proc.typeNode.equals("error")) {
-                    flag = 1;
+        if(node.idList.size()==1 && node.exprList.size()==1 && node.exprList.get(0).nomeNodo.equalsIgnoreCase("mapsum")){
+            node.idList.get(0).accept(this);
+            node.exprList.get(0).accept(this);
+            if(!node.idList.get(0).typeNode.equalsIgnoreCase(node.exprList.get(0).typeNode)){
+                node.typeNode = "error";
+                try {
+                    throw new Exception("Assegnazione non consentita A" + node.nomeNodo + node.idList.get(0).val + node.exprList.get(0).nodo1.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                RecordSymbolTable record = top.getInTypeEnviroment(proc.id.val);
-                typeExprFinale.add(record.typeRitorno);
-            } else {
+            }
+            node.typeNode="notype";
+        }else if(node.exprList.get(0).nomeNodo.equalsIgnoreCase("mapsum")){
+            try {
+                throw new Exception("Assegnazione non consentita B" + node.nomeNodo + node.idList.get(0).val + node.exprList.get(0).nodo1.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            for (int i = 0; i < node.idList.size(); i++) {
+                node.idList.get(i).accept(this);
+            }
+
+            for (int i = 0; i < node.exprList.size(); i++) {
+                node.exprList.get(i).accept(this);
+            }
+
+            ArrayList<String> typeExprFinale = new ArrayList<>();
+            int flag = 0;
+            for (int i = 0; i < node.exprList.size(); i++) { //aggiungo a typeExprFinale tutti i tipi che andiamo ad assegnare
+                if (node.exprList.get(i).nomeNodo.equals("FuncallOp")) {
+                    FuncallNode proc = (FuncallNode) node.exprList.get(i).nodo1;
+                    if (proc.typeNode.equals("error")) {
+                        flag = 1;
+                    }
+                    RecordSymbolTable record = top.getInTypeEnviroment(proc.id.val);
+                    typeExprFinale.add(record.typeRitorno);
+                } else {
 
 
                     typeExprFinale.add(node.exprList.get(i).typeNode);
@@ -268,9 +398,9 @@ public class AnalisiSemantica implements Visitatore{
             }
 
 
-        if(node.idList.size() == typeExprFinale.size() && flag == 0) { //controlliamo se la lista di variabili è della stessa size della lista dei valori che assegnamo
+            if (node.idList.size() == typeExprFinale.size() && flag == 0) { //controlliamo se la lista di variabili è della stessa size della lista dei valori che assegnamo
 
-            node.typeNode = "notype";
+                node.typeNode = "notype";
                 for (int i = 0; i < node.idList.size(); i++) { //controlliamo se i tipi che assegnamo coincidono
                     RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(i).val);
 
@@ -286,7 +416,7 @@ public class AnalisiSemantica implements Visitatore{
                         }
                     }
                 }
-            }else{
+            } else {
                 node.typeNode = "error";
                 try {
                     throw new Exception("Assegnazione non consentita " + node.nomeNodo + node.idList.get(0).val);
@@ -295,7 +425,7 @@ public class AnalisiSemantica implements Visitatore{
                 }
             }
 
-
+        }
 
         return null;
     }
@@ -531,6 +661,10 @@ public class AnalisiSemantica implements Visitatore{
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
                 node.tipoRitorno = nodo.typeNode;
+            } else if (classe == Mapsum.class) {
+                Mapsum nodo = (Mapsum) node.nodo;
+                nodo.accept(this);
+                node.typeNode = nodo.typeNode;
             }
 
         }
@@ -858,4 +992,6 @@ public class AnalisiSemantica implements Visitatore{
 
         return null;
     }
+
+
 }
