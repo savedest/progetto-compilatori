@@ -1,13 +1,20 @@
-integer i<<30;
-var a<< true;
-var b<< false;
-var c<< "true";
+
 var d<< 3;
 var f<< 4.8;
 start: def test(): void{
+integer s<<4;
+integer ss<<7;
+switch(s)
 
-    for i<<8 to 7 loop {
-    ("se vuoi fare la somma scrivi 1 ") -->!;
-    }
-    ("fuori for ",i) -->!;
+    1:ss<<7; stop ;
+    2:ss<<7; stop ;
+    3:ss<<7; stop ;
+    4:ss<<8; stop ;
+
+
+end switch;
+
+    ("ss value-> ",ss)-->!;
+
+
 }

@@ -25,6 +25,12 @@ public String content= "";
         this.content += String.format("</%s>",node.nomeNodo);
         return content;
     }
+    public String visit(CaseNode node){
+        return null;
+    }
+    public String visit(SwitchNode node){
+        return null;
+    }
 
     public String visit(Const node){
 

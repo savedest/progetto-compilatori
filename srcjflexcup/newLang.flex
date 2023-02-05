@@ -53,6 +53,9 @@ id = {symbol}({all_symbol})*
 "boolean" { return new Symbol(sym.BOOL);}
 "char" { return new Symbol(sym.CHAR);}
 "void"  { return new Symbol(sym.VOID);}
+"switch"  { return new Symbol(sym.SWITCH);}
+"stop"  { return new Symbol(sym.STOP);}
+  "end"  { return new Symbol(sym.END);}
 
 
 "def"  { return new Symbol(sym.DEF);}

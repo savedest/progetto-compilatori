@@ -20,6 +20,88 @@ public class AnalisiSemantica implements Visitatore{
     Env top = null; //tabella dei simboli corrente
     OpTypeTable opTypeTable = new OpTypeTable();
 
+
+    public String visit(CaseNode node){
+            node.val1.accept(this);
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+        int flag=0;
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in case "+node.val1.val  );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+    public String visit(SwitchNode node){
+
+        node.id.accept(this);
+
+        for (int i = 0; i < node.caseList.size(); i++) {
+            if(node.caseList.get(i)!=null) {
+                node.caseList.get(i).accept(this);
+            }
+
+        }
+
+
+        if(!node.id.typeNode.equalsIgnoreCase("integer")) {
+            try {
+                throw new Exception("La variabile nello switch deve essere intera " + node.nomenodo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        int flag=0;
+        if(node.id.typeNode.equalsIgnoreCase("error"))
+            flag=1;
+
+        if(node.caseList.size()!=0){
+            for (int i = 0; i < node.caseList.size(); i++) {
+                if(node.caseList.get(i)!= null && node.caseList.get(i).typeNode != null  ) {
+                    if (node.caseList.get(i).typeNode.equals("error"))
+                        flag = 1;
+
+                }
+            }
+        }
+
+        if (flag == 0) {
+            node.typeNode = "notype";
+        } else {
+            node.typeNode = "error";
+            try {
+                throw new Exception("Errore in : " + node.nomenodo );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+        return null;
+    }
     @Override
     public String visit(ExprNode node) {
         Class classe = node.nodo1.getClass();
@@ -506,6 +588,10 @@ public class AnalisiSemantica implements Visitatore{
 
             } else if (classe == WriteStat.class) {
                 WriteStat nodo = (WriteStat) node.nodo;
+                nodo.accept(this);
+                node.typeNode = nodo.typeNode;
+            } else if (classe == SwitchNode.class) {
+                SwitchNode nodo = (SwitchNode) node.nodo;
                 nodo.accept(this);
                 node.typeNode = nodo.typeNode;
 

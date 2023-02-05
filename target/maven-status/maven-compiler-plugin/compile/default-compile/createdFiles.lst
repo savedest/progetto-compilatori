@@ -17,6 +17,7 @@ nodi\ProgramRoot.class
 nodi\WhileStat.class
 nodi\Body.class
 nodi\BoolConst.class
+nodi\SwitchNode.class
 nodi\FuncallNode.class
 nodi\ElseStat.class
 nodi\Stat.class
@@ -25,6 +26,7 @@ nodi\IdVal.class
 Visitor\ScopingVisitor.class
 esercitazione5\Main.class
 Visitor\OpTypeTable.class
+nodi\CaseNode.class
 nodi\ExprNode.class
 Visitor\AnalisiSemantica.class
 Visitor\OpType.class

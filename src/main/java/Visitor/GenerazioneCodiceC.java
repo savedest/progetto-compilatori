@@ -10,6 +10,40 @@ public class GenerazioneCodiceC implements Visitatore{
     String content;
     Env top;
 
+    public String visit(CaseNode node){
+        this.content ="";
+        this.content +="case ";
+        this.content += node.val1.accept(this);
+        this.content +=":";
+        Collections.reverse(node.listaStat);
+        for(int i=0;i<node.listaStat.size();i++){
+            if(node.listaStat.get(i) != null) {
+
+                content += node.listaStat.get(i).accept(this);
+            }
+        }
+        Collections.reverse(node.listaStat);
+
+        this.content +="break;\n ";
+
+        return content;
+    }
+    public String visit(SwitchNode node){
+        this.content ="";
+        this.content +="switch( ";
+        this.content += node.id.accept(this);
+        this.content +="){ \n";
+        for(int i=0;i<node.caseList.size();i++){
+            if(node.caseList.get(i) != null) {
+                this.content +="\t";
+                content += node.caseList.get(i).accept(this);
+            }
+        }
+
+        this.content +="}\n";
+
+        return content;
+    }
     @Override
     public String visit(ExprNode node) {
         this.content ="";
@@ -685,6 +719,9 @@ public class GenerazioneCodiceC implements Visitatore{
                 this.content += nodo.accept(this);
             } else if (classe == ReadStat.class) {
                 ReadStat nodo = (ReadStat) node.nodo;
+                this.content += nodo.accept(this);
+            } else if (classe == SwitchNode.class) {
+                SwitchNode nodo = (SwitchNode) node.nodo;
                 this.content += nodo.accept(this);
             } else if (classe == ExprNode.class) {
                 ExprNode nodo = (ExprNode) node.nodo;

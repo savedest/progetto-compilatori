@@ -23,6 +23,13 @@ public class ScopingVisitor implements Visitatore{
 
     Env top = null; //tabella dei simboli corrente
 
+    public String visit(CaseNode node){
+        return null;
+    }
+    public String visit(SwitchNode node){
+        return null;
+    }
+
     @Override
     public String visit(ExprNode node) {
         return null;
