@@ -26,6 +26,9 @@ public String content= "";
         return content;
     }
 
+    public String visit(MultiObb node){
+        return  null;
+    }
     public String visit(Const node){
 
         this.content = "";
@@ -339,16 +342,16 @@ public String content= "";
 
             if (node.listaID.size() >= 1)
                 this.content += String.format("</%s>", "IdListInitOp");
-        }else{
-            if (node.idInitObb.size() >= 1)
-                this.content += String.format("<%s>", "IdListInitObbOp");
-
-            for (int i = 0; i < node.idInitObb.size(); i++) {
-                this.content += node.idInitObb.get(i).accept(this);
-            }
-
-            if (node.idInitObb.size() >= 1)
-                this.content += String.format("</%s>", "IdListInitObbOp");
+//        }else{
+//            if (node.idInitObb.size() >= 1)
+//                this.content += String.format("<%s>", "IdListInitObbOp");
+//
+//            for (int i = 0; i < node.idInitObb.size(); i++) {
+//                this.content += node.idInitObb.get(i).accept(this);
+//            }
+//
+//            if (node.idInitObb.size() >= 1)
+//                this.content += String.format("</%s>", "IdListInitObbOp");
         }
 
         this.content += String.format("</%s>",node.nomeNodo);

@@ -19,18 +19,11 @@ char * conversioneInt(int number){
   return buf;
 }char supporto[100];
 
-	int i=30;
-	bool  a = true;
-	bool  b = false;
-	char * c = (char*) malloc(sizeof(char) * 100);
-strcpy(c , "true");
-	int d = 3;
-	float f = 4.8;
+	int F = 5;
+char * j =  (char*) malloc(sizeof(char) * 100);
+strcpy(j , "huu");
 void test(){
-	for (int i = 8;i <= 7;i++){
-		printf("%s \n", "se vuoi fare la somma scrivi 1 ");
-}
-		printf("%s %d \n", "fuori for ", i);
+		printf("%s %s \n", "fuori rr ", j);
 }
 int main(){
 int intero=0;

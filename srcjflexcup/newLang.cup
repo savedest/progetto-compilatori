@@ -9,7 +9,7 @@ terminal float REAL_CONST;
 terminal Character CHAR_CONST;
 
 
-nonterminal Program, DeclList, MainFunDecl,
+nonterminal Program, DeclList, MainFunDecl,MultiIdInitObblList,
  VarDecl,FunDecl, Type, IdInitList,IdInitObblList,Expr,Const,  ParamDeclList,TypeOrVoid, Body,
  VarDeclList, StatList,NonEmptyParamDeclList,ParDecl, IdList, Stat, IfStat,ForStat,ReadStat,WriteStat,AssignStat,
  WhileStat,FunCall,Else,ExprList;
@@ -43,7 +43,9 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
 
 
             VarDecl ::= Type:type IdInitList:idInit SEMI {:RESULT = new VarDecl("VarDecl",(String)type, (ArrayList<IDInit>)idInit);:}
-            	| VAR IdInitObblList:idInitObb SEMI{:RESULT = new VarDecl("VarDeclObb", (ArrayList<IDInitObb>)idInitObb);:};
+            	//| VAR IdInitObblList:idInitObb SEMI{:RESULT = new VarDecl("VarDeclObb", (ArrayList<IDInitObb>)idInitObb);:}
+            	| VAR MultiIdInitObblList:assignVal SEMI {:RESULT = new VarDecl("MultiObb",(MultiObb)assignVal);:}
+            	;
 
             Type ::=
              INTEGER  {:RESULT = "INTEGER";:}
@@ -59,7 +61,13 @@ Program ::= DeclList:declList  MainFunDecl:mainFun DeclList:declList2 {:RESULT =
             	| IdInitList:idList COMMA ID:id ASSIGN Expr:expr  {:((ArrayList<IDInit>)idList).add(0, new IDInit(new IdVal(id),(ExprNode)expr)); RESULT = idList;:};
 
             IdInitObblList ::= ID:id ASSIGN Const:cost {:ArrayList<IDInitObb> idListObb = new ArrayList<IDInitObb>(); idListObb.add(0, new IDInitObb(new IdVal(id),(Const)cost));RESULT = idListObb;:}
-            	| IdInitObblList:idInitObb COMMA ID:id ASSIGN Const:cost {:((ArrayList<IDInitObb>)idInitObb).add(0, new IDInitObb(new IdVal(id),(Const)cost)); RESULT = idInitObb;:};
+            	| IdInitObblList:idInitObb COMMA ID:id ASSIGN Const:cost {:((ArrayList<IDInitObb>)idInitObb).add(0, new IDInitObb(new IdVal(id),(Const)cost)); RESULT = idInitObb;:}
+            	//| IdList:idList ASSIGN ExprList:exprList {: RESULT = new MultiObb("MultiObb",(ArrayList<IdVal>)idList,(ArrayList<ExprNode>)exprList); :}
+            	;
+
+            	  MultiIdInitObblList ::=  IdList:idList ASSIGN ExprList:exprList {: RESULT = new MultiObb("MultiObb",(ArrayList<IdVal>)idList,(ArrayList<ExprNode>)exprList); :};
+
+
 
             Const ::= INTEGER_CONST:val  {: RESULT = new Const("INTEGER_CONST", new IntegerConst(val)); :}
             | REAL_CONST:val             {: RESULT = new Const("REAL_CONST", new RealConst(val)); :}

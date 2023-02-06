@@ -9,6 +9,7 @@ public class VarDecl extends Node{
     public String type;
     public ArrayList<IDInit> listaID;
     public ArrayList<IDInitObb> idInitObb;
+    public MultiObb multiObb;
 
     public String typeNode;
 
@@ -21,6 +22,10 @@ public class VarDecl extends Node{
     public VarDecl(String nomeNodo, ArrayList<IDInitObb> listaIDObb) {
         this.nomeNodo = nomeNodo;
         this.idInitObb = listaIDObb;
+    }
+    public  VarDecl(String nomeNodo,MultiObb multi){
+        this.nomeNodo=nomeNodo;
+        this.multiObb=multi;
     }
     public Object accept(Visitatore v) {
         return v.visit(this);
