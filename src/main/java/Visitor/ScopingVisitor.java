@@ -96,13 +96,13 @@ public class ScopingVisitor implements Visitatore{
         for(int i=0; i < parDecl.listaID.size(); i++){
 
             //if(top.getInTypeEnviroment(parDecl.listaID.get(i).val) == null) {
-                if (parDecl.nomeNodo.equalsIgnoreCase("ParDeclOutOP")) {
-                    top.put(parDecl.listaID.get(i).val, "varOUT", null, type, true);
-                    parDecl.listaID.get(i).isOut = true;
-                    parDecl.isOut = true;
-                } else
-                    top.put(parDecl.listaID.get(i).val, "var", null, type);
-           // }
+            if (parDecl.nomeNodo.equalsIgnoreCase("ParDeclOutOP")) {
+                top.put(parDecl.listaID.get(i).val, "varOUT", null, type, true);
+                parDecl.listaID.get(i).isOut = true;
+                parDecl.isOut = true;
+            } else
+                top.put(parDecl.listaID.get(i).val, "var", null, type);
+            // }
         }
 
         return null;
@@ -128,7 +128,7 @@ public class ScopingVisitor implements Visitatore{
          * se non c'è facciamo
          * il controllo nel type environment e andiamo a vedere se non è già dichiarata una funzione con lo stesso nome
          * se è una variabile va be ne perchè la portiamo anche in questo scope(most closed nested)
-        */
+         */
 
 
         //scorriamo uan lista di id nella casisitica dove il type è esplicito
@@ -371,12 +371,12 @@ public class ScopingVisitor implements Visitatore{
     @Override
     public String visit(ProgramRoot programRoot) {
         /*in questo metodo chiamiamo prima tutti i vardecl affinchè siano visibili alle funzioni
-        * successivamente andiamo ad inserire nella tabella global i record relativi alle funzioni sia di declist 1 che declist 2 cosi che
-        * ogni funzione sia poi visibile ad ogni altra
-        * dopo queste operazioni preleminari posso chiamare gli accept dei fundecl i quali andranno a creare lo scope relativo
-        *
-        * Non è possibile dichiarare una funzione che si chiama main, nenache il main stesso!
-        * */
+         * successivamente andiamo ad inserire nella tabella global i record relativi alle funzioni sia di declist 1 che declist 2 cosi che
+         * ogni funzione sia poi visibile ad ogni altra
+         * dopo queste operazioni preleminari posso chiamare gli accept dei fundecl i quali andranno a creare lo scope relativo
+         *
+         * Non è possibile dichiarare una funzione che si chiama main, nenache il main stesso!
+         * */
 
         top = new Env(top);
 
@@ -460,13 +460,13 @@ public class ScopingVisitor implements Visitatore{
 
         //richiamo accept su i fundecl di declist1
         for(int i=0; i<programRoot.declist1.size();i++){
-             Class classe = programRoot.declist1.get(i).getClass();
-             if(classe == FunDecl.class){
+            Class classe = programRoot.declist1.get(i).getClass();
+            if(classe == FunDecl.class){
                 FunDecl fundecl =(FunDecl) programRoot.declist1.get(i);
                 fundecl.accept(this);
 
 
-                     top.getInThisTable(fundecl.id.val).parDecls=fundecl.listaPar;
+                top.getInThisTable(fundecl.id.val).parDecls=fundecl.listaPar;
 
             }
         }
@@ -481,7 +481,7 @@ public class ScopingVisitor implements Visitatore{
                 FunDecl funDecl =(FunDecl) programRoot.declist2.get(i);
                 funDecl.accept(this);
 
-                    top.getInThisTable(funDecl.id.val).parDecls=funDecl.listaPar;
+                top.getInThisTable(funDecl.id.val).parDecls=funDecl.listaPar;
 
             }
         }

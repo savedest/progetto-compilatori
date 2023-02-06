@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * simboli relativa al suo scope, questo è stato possibile grazie al fatto che gli oggetti analizzati dai diversi visitor
  * sono condivisi tra loro. Quindi l'oggetto "top" di questa classe conterrà la tabella di simboli relativa allo scope che si sta analizzando in quel momento
  *
- * Inoltre in questa classe implementa l'inferenza di tipo e il type checking dove si andrà a dare un tipo ad ogni nodo
+ * Inoltre  questa classe implementa l'inferenza di tipo e il type checking dove si andrà a dare un tipo ad ogni nodo
  * dell'albero
  * */
 public class AnalisiSemantica implements Visitatore{
@@ -85,7 +85,10 @@ public class AnalisiSemantica implements Visitatore{
             ExprNode nodo = (ExprNode)node.nodo1;
             nodo.accept(this);
             if(node.nodo2 == null) {
-                node.typeNode = opTypeTable.searchOp(node.nomeNodo, nodo.typeNode, ""); //controllo operazioni unarie
+                if(!node.nomeNodo.equalsIgnoreCase("InparOp"))
+                    node.typeNode = opTypeTable.searchOp(node.nomeNodo, nodo.typeNode, ""); //controllo operazioni unarie
+                else
+                    node.typeNode =nodo.typeNode;
             }
             typeFirstOperand = nodo.typeNode;
 
@@ -262,38 +265,38 @@ public class AnalisiSemantica implements Visitatore{
             } else {
 
 
-                    typeExprFinale.add(node.exprList.get(i).typeNode);
+                typeExprFinale.add(node.exprList.get(i).typeNode);
 
-                }
             }
+        }
 
 
         if(node.idList.size() == typeExprFinale.size() && flag == 0) { //controlliamo se la lista di variabili è della stessa size della lista dei valori che assegnamo
 
             node.typeNode = "notype";
-                for (int i = 0; i < node.idList.size(); i++) { //controlliamo se i tipi che assegnamo coincidono
-                    RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(i).val);
+            for (int i = 0; i < node.idList.size(); i++) { //controlliamo se i tipi che assegnamo coincidono
+                RecordSymbolTable record = top.getInTypeEnviroment(node.idList.get(i).val);
 
-                    if (!((record.typeRitorno).equals(typeExprFinale.get(i)))) {
-                        if (!(record.typeRitorno.equals("REAL") && typeExprFinale.get(i).equals("INTEGER"))) {
-                            node.typeNode = "error";
-                            try {
-                                throw new Exception("Assegnazione non consentita " + node.nomeNodo + node.idList.get(i).val + node.exprList.get(i).nodo1.toString());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            break;
+                if (!((record.typeRitorno).equals(typeExprFinale.get(i)))) {
+                    if (!(record.typeRitorno.equals("REAL") && typeExprFinale.get(i).equals("INTEGER"))) {
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Assegnazione non consentita " + node.nomeNodo + node.idList.get(i).val + node.exprList.get(i).nodo1.toString());
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
+                        break;
                     }
                 }
-            }else{
-                node.typeNode = "error";
-                try {
-                    throw new Exception("Assegnazione non consentita " + node.nomeNodo + node.idList.get(0).val);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
+        }else{
+            node.typeNode = "error";
+            try {
+                throw new Exception("Assegnazione non consentita " + node.nomeNodo + node.idList.get(0).val);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
 
 
@@ -310,8 +313,8 @@ public class AnalisiSemantica implements Visitatore{
         }
 
         for(int i=0; i<node.listaExpr.size(); i++){
-           if( node.listaExpr.get(i).typeNode.equalsIgnoreCase("error"))
-            flag =1;
+            if( node.listaExpr.get(i).typeNode.equalsIgnoreCase("error"))
+                flag =1;
         }
 
         if (flag == 0) {
@@ -365,11 +368,11 @@ public class AnalisiSemantica implements Visitatore{
             node.listaID.get(i).accept(this);
         }
         for(int i = 0; i<node.listaID.size(); i++ ){
-          if( node.listaID.get(i).typeNode.equals("error")){
-              node.typeNode = "error";
+            if( node.listaID.get(i).typeNode.equals("error")){
+                node.typeNode = "error";
             }else{
-              node.typeNode="notype";
-          }
+                node.typeNode="notype";
+            }
         }
 
 
@@ -385,7 +388,7 @@ public class AnalisiSemantica implements Visitatore{
         if(node.expr != null){
             node.expr.accept(this);
             if(node.id.typeNode.equals(node.expr.typeNode)){
-                 node.typeNode = "notype";
+                node.typeNode = "notype";
             }else
             if(node.id.typeNode.equals("REAL") && node.expr.typeNode.equals("INTEGER")){
                 node.typeNode = "notype";
@@ -544,35 +547,35 @@ public class AnalisiSemantica implements Visitatore{
         int flag =0;
 
         if(node.listaVar != null) {
-        for (int i = 0; i < node.listaVar.size(); i++) {
-            node.listaVar.get(i).accept(this);
-        }
-}
-
-
-            for (int i = 0; i < node.listaStat.size(); i++) {
-                if(node.listaStat.get(i)!=null) {
-                    node.listaStat.get(i).accept(this);
-                }
-
-            }
-
-
-            top= top.prev;
-
             for (int i = 0; i < node.listaVar.size(); i++) {
-                if(node.listaVar.get(i).typeNode.equals("error"))
-                    flag=1;
+                node.listaVar.get(i).accept(this);
             }
-            if(node.listaStat.size()!=0){
-                for (int i = 0; i < node.listaStat.size(); i++) {
-                    if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
-                        if (node.listaStat.get(i).typeNode.equals("error"))
-                            flag = 1;
+        }
 
-                    }
+
+        for (int i = 0; i < node.listaStat.size(); i++) {
+            if(node.listaStat.get(i)!=null) {
+                node.listaStat.get(i).accept(this);
+            }
+
+        }
+
+
+        top= top.prev;
+
+        for (int i = 0; i < node.listaVar.size(); i++) {
+            if(node.listaVar.get(i).typeNode.equals("error"))
+                flag=1;
+        }
+        if(node.listaStat.size()!=0){
+            for (int i = 0; i < node.listaStat.size(); i++) {
+                if(node.listaStat.get(i)!= null && node.listaStat.get(i).typeNode != null  ) {
+                    if (node.listaStat.get(i).typeNode.equals("error"))
+                        flag = 1;
+
                 }
             }
+        }
 
 
         if (flag == 0) {
@@ -586,22 +589,22 @@ public class AnalisiSemantica implements Visitatore{
             }
         }
 
-            for (int i = 0; i < node.listaStat.size(); i++) {
+        for (int i = 0; i < node.listaStat.size(); i++) {
 
 
-                if( node.listaStat.get(i)!= null &&  node.listaStat.get(i).nameStat.equals("return") ){
+            if( node.listaStat.get(i)!= null &&  node.listaStat.get(i).nameStat.equals("return") ){
 
-                    node.tipoRitorno = node.listaStat.get(i).tipoRitorno;
-                    return null;
-                }else if( node.listaStat.get(i)!= null && node.listaStat.get(i).nameStat.equals("returnVoid")){
-                    node.tipoRitorno = "void";
-                    return null;
-                }
-
-                    node.tipoRitorno = "void";
-
-
+                node.tipoRitorno = node.listaStat.get(i).tipoRitorno;
+                return null;
+            }else if( node.listaStat.get(i)!= null && node.listaStat.get(i).nameStat.equals("returnVoid")){
+                node.tipoRitorno = "void";
+                return null;
             }
+
+            node.tipoRitorno = "void";
+
+
+        }
 
 
 
@@ -651,7 +654,7 @@ public class AnalisiSemantica implements Visitatore{
 
         int flag = 0;
 
-       // printSymbleTable2();
+        // printSymbleTable2();
         node.nodeEx.accept(this);
         node.body.accept(this);
 
@@ -726,10 +729,10 @@ public class AnalisiSemantica implements Visitatore{
             if(node.listaPar != null){
                 for(int i=0; i< node.listaPar.size(); i++){
 
-                        node.listaPar.get(i).accept(this);
+                    node.listaPar.get(i).accept(this);
 
-                        if (node.listaPar.get(i).typeNode.equalsIgnoreCase("error")) {
-                            flag = 1;
+                    if (node.listaPar.get(i).typeNode.equalsIgnoreCase("error")) {
+                        flag = 1;
 
                     }
                 }
@@ -760,7 +763,7 @@ public class AnalisiSemantica implements Visitatore{
                 e.printStackTrace();
             }
         }
-       // top = top.prev;
+        // top = top.prev;
         return null;
     }
 
