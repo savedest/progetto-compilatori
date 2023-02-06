@@ -26,6 +26,8 @@ void test(){
 		printf("%s %s \n", "fuori rr ", j);
 }
 int main(){
+;
+j;
 int intero=0;
 char carattere=' ';
 float float1=0;

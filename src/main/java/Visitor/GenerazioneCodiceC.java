@@ -1029,18 +1029,23 @@ public class GenerazioneCodiceC implements Visitatore{
 
         if(variabiliGlobali != null) {
             for (int i = 0; i < variabiliGlobali.size(); i++) {
-                if (variabiliGlobali.get(i).nomeNodo.equalsIgnoreCase("VarDeclObb")) {
-                    for (int j = 0; j < variabiliGlobali.get(i).idInitObb.size(); j++) {
-                        if(variabiliGlobali.get(i).idInitObb.get(j).cost.typeNode.equalsIgnoreCase("string"))
-                            this.content += variabiliGlobali.get(i).idInitObb.get(j).accept(this);
+                if (variabiliGlobali.get(i).nomeNodo.equalsIgnoreCase("MultiObb")) {
+                    for (int j = 0; j < variabiliGlobali.get(i).multiObb.idList.size(); j++) {
+                        if(variabiliGlobali.get(i).multiObb.exprList.get(j).typeNode.equalsIgnoreCase("string"))
+                            this.content += variabiliGlobali.get(i).multiObb.idList.get(j).accept(this);
                         this.content += ";\n";
                     }
-                } else if(variabiliGlobali.get(i).type!=null && variabiliGlobali.get(i).type.equalsIgnoreCase("string")) {
+                } else if(variabiliGlobali.get(i).type!=null ) {
+                    for(int k=0;k< variabiliGlobali.get(i).multiObb.exprList.size();k++) {
+                        if (variabiliGlobali.get(i).multiObb.exprList.get(k).typeNode.equalsIgnoreCase("string")) {
 
-                    for (int j = 0; j < variabiliGlobali.get(i).listaID.size(); j++) {
 
-                        this.content += variabiliGlobali.get(i).listaID.get(j).accept(this);
-                        this.content += ";\n";
+                            for (int j = 0; j < variabiliGlobali.get(i).listaID.size(); j++) {
+
+                                this.content += variabiliGlobali.get(i).listaID.get(j).accept(this);
+                                this.content += ";\n";
+                            }
+                        }
                     }
                 }
             }
