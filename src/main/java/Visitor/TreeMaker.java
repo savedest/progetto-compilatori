@@ -355,6 +355,9 @@ public String content= "";
         return content;
     }
 
+    public String visit(MapSumNode node){
+        return null;
+    }
     public String visit(IfStat node){
         this.content = String.format("<%s>",node.nomenodo);
 

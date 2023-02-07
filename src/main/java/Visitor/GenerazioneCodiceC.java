@@ -10,6 +10,120 @@ public class GenerazioneCodiceC implements Visitatore{
     String content;
     Env top;
     ArrayList<VarDecl> variabiliGlobali = new ArrayList<VarDecl>();
+
+    public String visit(MapSumNode node){
+        RecordSymbolTable recordSymbolTable = top.getInTypeEnviroment(node.id.val);
+
+        this.content = "";
+
+        //esperssione 1
+        int tmp = 0;
+        this.content += node.id.accept(this);
+        this.content += "(";
+
+        if (recordSymbolTable.parDecls != null){
+            Collections.reverse(recordSymbolTable.parDecls);
+            for (int i = 0; i < recordSymbolTable.parDecls.size(); i++) {
+                for (int j = 0; j < recordSymbolTable.parDecls.get(i).listaID.size(); j++) {
+                    if (recordSymbolTable.parDecls.get(i).isOut) {
+                        this.content += "&";
+                        this.content += node.listaExprNode1.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    } else {
+                        this.content += node.listaExprNode1.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    }
+
+                    tmp++;
+                }
+
+                if (i != recordSymbolTable.parDecls.size() - 1)
+                    this.content += ",";
+
+            }
+            Collections.reverse(recordSymbolTable.parDecls);
+        }
+
+
+        this.content += ") + ";
+
+        //fine espressione 1
+
+        //esperssione 2
+        tmp = 0;
+        this.content += node.id.accept(this);
+        this.content += "(";
+
+        if (recordSymbolTable.parDecls != null){
+            Collections.reverse(recordSymbolTable.parDecls);
+            for (int i = 0; i < recordSymbolTable.parDecls.size(); i++) {
+                for (int j = 0; j < recordSymbolTable.parDecls.get(i).listaID.size(); j++) {
+                    if (recordSymbolTable.parDecls.get(i).isOut) {
+                        this.content += "&";
+                        this.content += node.listaExprNode2.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    } else {
+                        this.content += node.listaExprNode2.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    }
+
+                    tmp++;
+                }
+
+                if (i != recordSymbolTable.parDecls.size() - 1)
+                    this.content += ",";
+
+            }
+            Collections.reverse(recordSymbolTable.parDecls);
+        }
+
+
+        this.content += ") + ";
+
+        //fine espressione 2
+
+        //esperssione 3
+        tmp = 0;
+        this.content += node.id.accept(this);
+        this.content += "(";
+
+        if (recordSymbolTable.parDecls != null){
+            Collections.reverse(recordSymbolTable.parDecls);
+            for (int i = 0; i < recordSymbolTable.parDecls.size(); i++) {
+                for (int j = 0; j < recordSymbolTable.parDecls.get(i).listaID.size(); j++) {
+                    if (recordSymbolTable.parDecls.get(i).isOut) {
+                        this.content += "&";
+                        this.content += node.listaExprNode3.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    } else {
+                        this.content += node.listaExprNode3.get(tmp).accept(this);
+                        if (j != recordSymbolTable.parDecls.get(i).listaID.size() - 1)
+                            this.content += ",";
+                    }
+
+                    tmp++;
+                }
+
+                if (i != recordSymbolTable.parDecls.size() - 1)
+                    this.content += ",";
+
+            }
+            Collections.reverse(recordSymbolTable.parDecls);
+        }
+
+
+        this.content += ")";
+
+        //fine espressione 3
+
+
+        return content;
+    }
     @Override
     public String visit(ExprNode node) {
         this.content ="";
@@ -56,9 +170,15 @@ public class GenerazioneCodiceC implements Visitatore{
         } else if(classe == FuncallNode.class){
             FuncallNode nodo = (FuncallNode) node.nodo1;
             this.content += nodo.accept(this);
-        } else if(classe == ExprNode.class) {
+        }
+        else if(classe == MapSumNode.class){
+            MapSumNode nodo = (MapSumNode) node.nodo1;
+            this.content += nodo.accept(this);
+        }
+        else if(classe == ExprNode.class) {
             ExprNode nodo = (ExprNode) node.nodo1;
 
+           // if(nodo.typeNode != null)
             if(nodo.typeNode.equalsIgnoreCase("string")&& node.nodo2!=null){
                 if(node.nomeNodo.equalsIgnoreCase("StrConcatOp")){
                     this.content += "strcat(strcpy(supporto,"+nodo.accept(this)+"),";

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public interface Visitatore {
     public String visit(ExprNode node);
     String visit(BoolConst node);
+    String visit(MapSumNode node);
 
     String visit(IntegerConst node);
     String visit(RealConst node);

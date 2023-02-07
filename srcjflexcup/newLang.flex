@@ -53,6 +53,7 @@ id = {symbol}({all_symbol})*
 "boolean" { return new Symbol(sym.BOOL);}
 "char" { return new Symbol(sym.CHAR);}
 "void"  { return new Symbol(sym.VOID);}
+      "mapsum"  { return new Symbol(sym.MAPSUM);}
 
 
 "def"  { return new Symbol(sym.DEF);}

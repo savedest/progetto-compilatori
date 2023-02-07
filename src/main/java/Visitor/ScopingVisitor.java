@@ -22,6 +22,9 @@ dell’istruzione ‘if’, il corpo dell’istruzione ‘while’, il ‘for’
 public class ScopingVisitor implements Visitatore{
 
     Env top = null; //tabella dei simboli corrente
+    public String visit(MapSumNode node){
+        return null;
+    }
 
     @Override
     public String visit(ExprNode node) {

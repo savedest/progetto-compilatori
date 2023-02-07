@@ -19,6 +19,141 @@ public class AnalisiSemantica implements Visitatore{
 
     Env top = null; //tabella dei simboli corrente
     OpTypeTable opTypeTable = new OpTypeTable();
+    public String visit(MapSumNode node){
+            int flag=0;
+        RecordSymbolTable record= top.getInTypeEnviroment(node.id.val);
+        if(record.kind.equalsIgnoreCase("var"))
+        {
+            flag=1;
+            try{
+                throw new Exception("il primo argomento di mapsum deve essere una funzione "+node.id.val);
+
+            }catch (Exception e){
+
+                e.printStackTrace();
+            }
+        }else{
+            if(!record.typeRitorno.equalsIgnoreCase("integer") && !record.typeRitorno.equalsIgnoreCase("real") ){
+                flag=1;
+                try{
+                    throw new Exception("il tipo di ritorno della funzione "+node.id.val+" deve essere o real o integer ");
+
+                }catch (Exception e){
+
+                    e.printStackTrace();
+                }
+            }
+
+        }
+
+        node.id.accept(this);
+        if(node.id.typeNode.equalsIgnoreCase("error"))
+            flag=1;
+
+        if(node.listaExprNode1 !=null){
+            for(int i =0 ;i< node.listaExprNode1.size();i++){
+                node.listaExprNode1.get(i).accept(this);
+            }
+        }
+        if(node.listaExprNode2 !=null){
+            for(int i =0 ;i< node.listaExprNode2.size();i++){
+                node.listaExprNode2.get(i).accept(this);
+            }
+        }
+        if(node.listaExprNode3 !=null){
+            for(int i =0 ;i< node.listaExprNode3.size();i++){
+                node.listaExprNode3.get(i).accept(this);
+            }
+        }
+
+        int sizeList1 = 0;
+        int sizeList2 = 0;
+        int sizeList3 = 0;
+
+        if (record != null && (record.kind.equals("func") || (record.kind.equals("mainFunc")) )){
+            if(node.listaExprNode1 != null)
+                sizeList1 = node.listaExprNode1.size();
+
+            if(node.listaExprNode2 != null)
+                sizeList2 = node.listaExprNode2.size();
+
+            if(node.listaExprNode3 != null)
+                sizeList3 = node.listaExprNode3.size();
+
+            if(sizeList1 == record.typeParametri.size() && sizeList2 == record.typeParametri.size() && sizeList3 == record.typeParametri.size()) {//da rivedere
+
+                for (int i = 0; i < sizeList1; i++) { //controllo che i parametri passati alla proc siano del tipo corretto
+                    if (!(node.listaExprNode1.get(i).typeNode.equalsIgnoreCase(record.typeParametri.get(i)))) {
+                        flag = 1;
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Tipo di parametri errato" + node.nomeNodo+" "+node.id.val);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+
+                for (int i = 0; i < sizeList2; i++) { //controllo che i parametri passati alla proc siano del tipo corretto
+                    if (!(node.listaExprNode2.get(i).typeNode.equalsIgnoreCase(record.typeParametri.get(i)))) {
+                        flag = 1;
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Tipo di parametri errato" + node.nomeNodo+" "+node.id.val);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+
+                for (int i = 0; i < sizeList3; i++) { //controllo che i parametri passati alla proc siano del tipo corretto
+                    //if(node.listaExprNode3.get(i).typeNode != null)
+                    if (!(node.listaExprNode3.get(i).typeNode.equalsIgnoreCase(record.typeParametri.get(i)))) {
+                        flag = 1;
+                        node.typeNode = "error";
+                        try {
+                            throw new Exception("Tipo di parametri errato" + node.nomeNodo+" "+node.id.val);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }
+
+                if(flag ==0) {
+                    if(record.typeRitorno.equalsIgnoreCase("void")) {
+                        node.typeNode = "notype";
+                    }else{
+                        node.typeNode = record.typeRitorno;
+                    }
+
+                }
+            } else {
+                node.typeNode = "error";
+                try {
+                    throw new Exception("Numero di parametri in mupsum errato " + node.id.val);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{
+            node.typeNode = "error";
+            try {
+                throw new Exception("Funzione non esistente " + node.id.val);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
+
+        return null;
+    }
 
     @Override
     public String visit(ExprNode node) {
@@ -81,7 +216,19 @@ public class AnalisiSemantica implements Visitatore{
             } else {
                 typeFirstOperand = nodo.typeNode;
             }
-        } else if(classe == ExprNode.class){
+
+        }
+        else if(classe == MapSumNode.class){
+            MapSumNode nodo = (MapSumNode) node.nodo1;
+            nodo.accept(this);
+            if(node.nodo2 == null) {
+                node.typeNode = nodo.typeNode;
+            } else {
+                typeFirstOperand = nodo.typeNode;
+            }
+
+        }
+        else if(classe == ExprNode.class){
             ExprNode nodo = (ExprNode)node.nodo1;
             nodo.accept(this);
             if(node.nodo2 == null) {
