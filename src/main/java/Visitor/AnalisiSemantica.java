@@ -102,8 +102,7 @@ public class AnalisiSemantica implements Visitatore{
                         node.typeNode = "error";
                         try {
                             throw new Exception("Tipo di parametri errato" + node.nomeNodo+" "+node.id.val);
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        } catch (Exception e) {e.printStackTrace();
                         }
                     }
 
